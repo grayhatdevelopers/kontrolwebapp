@@ -1,0 +1,14 @@
+.success { 
+    background: green; 
+    color: white; 
+}
+
+.warn { 
+    background: orange; 
+    color: white; 
+}
+
+.fail { 
+    background: red; 
+    color: white; 
+}

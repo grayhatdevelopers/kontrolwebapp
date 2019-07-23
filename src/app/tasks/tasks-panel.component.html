@@ -1,0 +1,573 @@
+<div class="main-content">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-md-8">
+              <div class="card">
+                  <div class="card-header card-header-primary">
+                      <h4 class="card-title">Add New Task</h4>
+                      <p class="card-category">Complete the details to add a new/emergency task.</p>
+                  </div>
+                  <div class="card-body">
+                      <form>
+                          <div class="row">
+                              <div class="col-md-5">
+                                <!-- <mat-form-field class="example-full-width"> -->
+                                  
+                                    <!-- <li class="nav-item dropdown" placeholder="Company"> -->
+                                        <mat-form-field>
+                                            <mat-label>Select Company</mat-label>
+                                            <mat-select>
+                                              <mat-option [value]="'KEUNE'">KEUNE</mat-option>
+                                              <mat-option [value]="'BLESSO'">BLESSO</mat-option>
+                                              <mat-option [value]="'EVELINE'">EVELINE</mat-option>
+                                              <mat-option [value]="'Other'">Other</mat-option>
+                                              <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                                                {{food.viewValue}}
+                                              </mat-option> -->
+                                            </mat-select>
+                                          </mat-form-field>    
+                                  <!-- </li> -->
+                                  <!-- </mat-form-field> -->
+                              </div>
+                              <div class="col-md-3">
+                                  <mat-form-field>
+                                      <input matInput [matDatepicker]="dp" placeholder="Select Date">
+                                      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                                      <mat-datepicker #dp></mat-datepicker>
+                                    </mat-form-field>
+                                    
+                                    <!-- <button mat-button (click)="french()">Dynamically switch to French</button> -->
+                                  <!-- <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Username">
+                                  </mat-form-field> -->
+                              </div>
+                              <!-- <div class="col-md-4">
+                                  <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Email address" type="email">
+                                  </mat-form-field>
+                              </div> -->
+                          </div>
+                          <div class="row">
+                              <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                            <input type="text" placeholder="Select Client..." aria-label="Number" matInput [formControl]="newtaskForm" [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete">
+                                              <mat-option *ngFor="let option of clientOptions_new | async" [value]="clientOptions_new">
+                                                {{option}}
+                                              </mat-option>
+                                            </mat-autocomplete>
+                                          </mat-form-field>
+                              </div>
+                              <div class="col-md-2">
+                                  <mat-form-field>
+                                      <mat-label>REP</mat-label>
+                                      <mat-select [(ngModel)]="selectedSupplyOfficer" name="option">
+                                          <!-- <div *ngFor = "let option of supplyOfficersList"> -->
+                                        <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector">{{supplyselector.rep}}</mat-option>
+                                        <mat-option>Ham</mat-option>
+                                        <!-- <mat-option [value]="'Ayat'">Ayat</mat-option>
+                                        <mat-option [value]="'Saad'">Saad</mat-option> -->
+                                        <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                                          {{food.viewValue}}
+                                        </mat-option> -->
+                                    <!-- </div>   -->
+                                    </mat-select>
+                                    </mat-form-field>
+                              </div>
+                          </div>
+                          <!-- <div class="row">
+                              <div class="col-md-12">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput placeholder="Adress" type="text">
+                                </mat-form-field>
+                              </div>
+                          </div> -->
+                          <div class="row">
+                              <div class="col-md-2">
+                                <mat-form-field>
+                                  <mat-label>Type</mat-label>
+                                  <mat-select>
+                                    <mat-option [value]="'Order'">Order</mat-option>
+                                    <mat-option [value]="'Payment'">Payment</mat-option>
+                                    <mat-option [value]="'Return'">Return</mat-option>
+                                    <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                                      {{food.viewValue}}
+                                    </mat-option> -->
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-md-4">
+                                <mat-form-field class="example-full-width">
+                                  <input matInput placeholder="Debit" type="text">
+                                </mat-form-field>
+                              </div>
+                              <div class="col-md-2">
+                                <mat-form-field>
+                                  <mat-label>Task Type</mat-label>
+                                  <mat-select>
+                                    <mat-option [value]="'Emergency'">Emergency</mat-option>
+                                    <mat-option [value]="'Regular'">Regular</mat-option>
+                                    <mat-option [value]="'Off-Schedule'">Off-Schedule</mat-option>
+                                    <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                                      {{food.viewValue}}
+                                    </mat-option> -->
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-8">
+                                <label>Extra Details</label>
+                                <mat-form-field class="example-full-width">
+                                   <textarea matInput placeholder="(optional)"></textarea>
+                                 </mat-form-field>
+
+                              </div>
+                          </div>
+                            <div class="row">
+                              <div class="col-md-8">
+                                <button mat-raised-button type="submit" class="btn btn-primary pull-right" (click)="openDialog('Preview your new task.', 'COMPANY: hello <br> DATE: world <br> CLIENT: HELLOWORDHELLOWORLD(HELLO123) <br> REP: HAM <br> Type: hel <br> Debit: 1000 <br> Task Type: Emergency <br> Extra Details: Hey world <br>')">ADD TASK</button>
+                                <!-- (click)="this.notificationsService.showNotification(2, 'Task created! Click here to open the task in full detail.')" -->
+                                <div class="clearfix"></div>
+                              </div>
+                            </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+
+          <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Actions Log</h4>
+                        <!-- <p class="card-category">Complete the details to add a new/emergency task.</p> -->
+                    </div>
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
+
+
+
+          <div class="col-md-4">
+              <div class="card card-profile">
+                  <!-- <div class="card-avatar">
+                      <a href="javascript:void(0)">
+                          <img class="img" src="./assets/img/faces/marc.jpg" />
+                      </a>
+                  </div> -->
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title">Transfer Task</h4>
+                    <!-- <p class="card-category">Create a duplicate task for another rider.</p> -->
+                </div>
+                  <div class="card-body">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Select Client" type="text">
+                      </mat-form-field>
+                      <i class="material-icons">swap_vert</i>
+                      <mat-form-field>
+                        <mat-label>REP</mat-label>
+                        <mat-select>
+                          <mat-option [value]="'HAM'">HAM</mat-option>
+                          <mat-option [value]="'Ayat'">Ayat</mat-option>
+                          <mat-option [value]="'Saad'">Saad</mat-option>
+                          <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                            {{food.viewValue}}
+                          </mat-option> -->
+                        </mat-select>
+                      </mat-form-field>
+                      <!-- <p class="card-description">
+                          Don't be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...
+                      </p> -->
+                      <a href="javascript:void(0)" class="btn btn-primary btn-round">TRANSFER</a>
+                  </div>
+              </div>
+
+              <div class="card card-profile">
+                <!-- <div class="card-avatar">
+                    <a href="javascript:void(0)">
+                        <img class="img" src="./assets/img/faces/marc.jpg" />
+                    </a>
+                </div> -->
+              <div class="card-header card-header-primary">
+                  <h4 class="card-title">Bulk Upload</h4>
+                  <!-- <p class="card-category">Create a duplicate task for another rider.</p> -->
+              </div>
+                <div class="card-body">
+                  <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{company}}<!-- <i class="material-icons">person</i> -->
+
+                  <!-- <p>
+                      <span class="d-lg-none d-md-block">Account</span>
+                  </p> -->
+                                
+              <div class="dropdown-menu dropdown-menu-centre" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" (click) = "company = 'KEUNE'" >KEUNE</a>
+                      <a class="dropdown-item" (click) = "company = 'BLESSO'" >BLESSO</a>
+                      <a class="dropdown-item" (click) = "company = 'EVELINE'" >EVELINE</a>
+                      <a class="dropdown-item" (click) = "company = 'OTHER'" >Other</a>
+              </div>  
+            </a>   
+            <div class="Block">
+                <!-- <label id="lbl">Select File to Upload... </label> -->
+                <input #fileInput type='file'/>
+              </div>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-round">UPLOAD</a>
+                </div>
+            </div>
+
+
+
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title ">ALL TASKS</h4>
+                    <p class="card-category"> Search</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="text-primary">
+                            <th>
+                               Task ID
+                            </th>
+                            <th>
+                                Company
+                            </th>
+                            <th>
+                                Client
+                            </th>
+                            <th>
+                                REP
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                    Debit
+                                </th>
+                                <th>
+                                        Task Type
+                                    </th>
+                                    <th>
+                                            Status
+                                        </th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    123
+                                </td>
+                                <td>
+                                    KEUNE
+                                </td>
+                                <td>
+                                    51% FIFTY ONE PERCENT(PWD)
+                                </td>
+                                <td>
+                                    SUB
+                                </td>
+                                <td>
+                                    Order
+                                </td>
+                                <td>
+                                        50000
+                                    </td>
+                                    <td>
+                                            Emergency
+                                        </td>
+                                        <td>
+                                                <mat-chip-list aria-label="Fish selection">
+                                                    <mat-chip color="fail" selected>Pending</mat-chip>
+                                                  </mat-chip-list>
+                                                    <!-- <mat-chip color="accent" selected>Accent fish</mat-chip> -->
+                                                  <!-- </mat-chip-list> -->
+                                            </td>
+                                        <td class="td-actions text-right">
+                                                <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                        <i class="material-icons">info</i>
+                                                    </button>
+                                                <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                    <i class="material-icons">edit</i>
+                                                </button>
+                                                <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon">
+                                                    <i class="material-icons">close</i>
+                                                </button>
+                                            </td>   
+                            </tr>
+                            <tr>
+                                    <td>
+                                        456
+                                    </td>
+                                    <td>
+                                        BLESSO
+                                    </td>
+                                    <td>
+                                        A R PHARMACY (BARAF KHANA)
+                                    </td>
+                                    <td>
+                                        Ayat
+                                    </td>
+                                    <td>
+                                        Payment
+                                    </td>
+                                    <td>
+                                            2000
+                                        </td>
+                                        <td>
+                                                Regular
+                                            </td>
+                                            <td>
+                                                    <mat-chip-list aria-label="Fish selection">
+                                                        <mat-chip class="primary" selected>Completed</mat-chip>
+                                                      </mat-chip-list>
+                                                        <!-- <mat-chip color="accent" selected>Accent fish</mat-chip> -->
+                                                      <!-- </mat-chip-list> -->
+                                                </td>
+                                            <td class="td-actions text-right">
+                                                    <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                            <i class="material-icons">info</i>
+                                                        </button>
+                                                    <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>   
+                                </tr>
+                                <tr>
+                                        <td>
+                                            789
+                                        </td>
+                                        <td>
+                                            EVELINE
+                                        </td>
+                                        <td>
+                                            AL SHIFA MEDICINE WORLD (TENCH)
+                                        </td>
+                                        <td>
+                                            HAM
+                                        </td>
+                                        <td>
+                                            Return
+                                        </td>
+                                        <td>
+                                                3000
+                                            </td>
+                                            <td>
+                                                    Off Schedule                                                                            </td>
+                                                <td>
+                                                        <mat-chip-list aria-label="Fish selection">
+                                                            <mat-chip color="warn" selected>Failed</mat-chip>
+                                                          </mat-chip-list>
+                                                            <!-- <mat-chip color="accent" selected>Accent fish</mat-chip> -->
+                                                          <!-- </mat-chip-list> -->
+                                                    </td>
+                                                <td class="td-actions text-right">
+                                                        <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                                <i class="material-icons">info</i>
+                                                            </button>
+                                                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                            <i class="material-icons">edit</i>
+                                                        </button>
+                                                        <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon">
+                                                            <i class="material-icons">close</i>
+                                                        </button>
+                                                    </td>   
+                                    </tr>
+                                    <!-- <tr>
+                                <td>
+                                    4
+                                </td>
+                                <td>
+                                    Philip Chaney
+                                </td>
+                                <td>
+                                    Korea, South
+                                </td>
+                                <td>
+                                    Overland Park
+                                </td>
+                                <td>
+                                    $38,735
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    5
+                                </td>
+                                <td>
+                                    Doris Greene
+                                </td>
+                                <td>
+                                    Malawi
+                                </td>
+                                <td>
+                                    Feldkirchen in Kärnten
+                                </td>
+                                <td>
+                                    $63,542
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    6
+                                </td>
+                                <td>
+                                    Mason Porter
+                                </td>
+                                <td>
+                                    Chile
+                                </td>
+                                <td>
+                                    Gloucester
+                                </td>
+                                <td>
+                                    $78,615
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>    
+                  
+                  
+                  
+                  
+                  
+                  
+                  <!-- <div class="table-responsive">
+                        <table class="table">
+                            <thead class=" text-primary">
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Country
+                                </th>
+                                <th>
+                                    City
+                                </th>
+                                <th>
+                                    Salary
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        1
+                                    </td>
+                                    <td>
+                                        Dakota Rice
+                                    </td>
+                                    <td>
+                                        Niger
+                                    </td>
+                                    <td>
+                                        Oud-Turnhout
+                                    </td>
+                                    <td class="text-primary">
+                                        $36,738
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        2
+                                    </td>
+                                    <td>
+                                        Minerva Hooper
+                                    </td>
+                                    <td>
+                                        Curaçao
+                                    </td>
+                                    <td>
+                                        Sinaai-Waas
+                                    </td>
+                                    <td class="text-primary">
+                                        $23,789
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        3
+                                    </td>
+                                    <td>
+                                        Sage Rodriguez
+                                    </td>
+                                    <td>
+                                        Netherlands
+                                    </td>
+                                    <td>
+                                        Baileux
+                                    </td>
+                                    <td class="text-primary">
+                                        $56,142
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        4
+                                    </td>
+                                    <td>
+                                        Philip Chaney
+                                    </td>
+                                    <td>
+                                        Korea, South
+                                    </td>
+                                    <td>
+                                        Overland Park
+                                    </td>
+                                    <td class="text-primary">
+                                        $38,735
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        5
+                                    </td>
+                                    <td>
+                                        Doris Greene
+                                    </td>
+                                    <td>
+                                        Malawi
+                                    </td>
+                                    <td>
+                                        Feldkirchen in Kärnten
+                                    </td>
+                                    <td class="text-primary">
+                                        $63,542
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        6
+                                    </td>
+                                    <td>
+                                        Mason Porter
+                                    </td>
+                                    <td>
+                                        Chile
+                                    </td>
+                                    <td>
+                                        Gloucester
+                                    </td>
+                                    <td class="text-primary">
+                                        $78,615
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+  </div>
+</div>
