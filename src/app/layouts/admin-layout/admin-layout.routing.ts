@@ -7,7 +7,9 @@ import { TypographyComponent } from '../../generate/typography.component';
 import { CustomerCardsComponent } from '../../customercards/customercards.component';
 import { MapsComponent } from '../../maps/maps.component';
 import { ChequesComponent } from '../../cheques/cheques-panel.component';
-import { UpgradeComponent } from '../../pages/upgrade.component';
+// import { UpgradeComponent } from '../../pages/upgrade.component';
+// import { LoginPageComponent } from '../../pages/login-page/login-page.component'
+import { LoginGuard } from './login.guard';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -52,13 +54,13 @@ export const AdminLayoutRoutes: Routes = [
     //         component: UpgradeComponent
     //     }]
     // }
-    { path: 'dashboard',      component: DashboardComponent },
-    { path: 'tasks',   component: TasksPanelComponent },
-    { path: 'supplyofficers',     component: TableListComponent },
-    { path: 'generate',     component: TypographyComponent },
-    { path: 'customercards',          component: CustomerCardsComponent },
-    { path: 'maps',           component: MapsComponent },
-    { path: 'cheques',  component: ChequesComponent },
-    { path: 'signin',        component: UpgradeComponent },
-    { path: '', redirectTo: 'signin', pathMatch: 'full'},
-];
+    { path: 'dashboard',      component: DashboardComponent, canActivate:[LoginGuard] },
+    { path: 'tasks',   component: TasksPanelComponent, canActivate:[LoginGuard] },
+    { path: 'supplyofficers',     component: TableListComponent, canActivate:[LoginGuard] },
+    { path: 'generate',     component: TypographyComponent, canActivate:[LoginGuard] },
+    { path: 'customercards',          component: CustomerCardsComponent, canActivate:[LoginGuard] },
+    { path: 'maps',           component: MapsComponent, canActivate:[LoginGuard] },
+    { path: 'cheques',  component: ChequesComponent, canActivate:[LoginGuard] },
+    // { path: 'login',        component: LoginPageComponent },
+    { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+]; 

@@ -1,0 +1,58 @@
+body, html {
+    height: 100%;
+  }
+  
+  .bg { 
+    /* The image used */
+    background-image: url("C:/Users/care/Desktop/Code stuff/Workspace/kontrolwebapp-master/src/assets/img/settings.jpg");
+  
+    /* Full height */
+    height: 100%; 
+  
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .login-box{
+    margin: auto;
+    margin-top: 15%;
+}
+
+.main-div{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-panel{
+    position: relative;
+    float: center;
+    width: 100%;
+    // @include transition (0.33s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+
+     .main-content{
+        margin-top: 70px;
+        padding: 30px 15px;
+        min-height: calc(100vh - 123px);
+    }
+
+     .footer{
+        border-top: 1px solid #e7e7e7;
+    }
+
+     .navbar{
+        margin-bottom: 0;
+    }
+
+    .header{
+        margin-bottom: 30px;
+
+        .title{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    }
+}

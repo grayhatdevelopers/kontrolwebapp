@@ -13,8 +13,10 @@ import { CustomerCardsComponent } from '../../customercards/customercards.compon
 import { MapsComponent } from '../../maps/maps.component';
 import { ChequesComponent } from '../../cheques/cheques-panel.component';
 import { UpgradeComponent } from '../../pages/upgrade.component';
+import { LoginPageComponent } from '../../pages/login-page/login-page.component'
 
 
+// import { LoginGuard } from './login.guard'
 // import { AngularFireModule } from '@angular/fire';
 // import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
 // import { environment } from '../../../environments/environment';
@@ -26,6 +28,12 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {PopupService} from 'app/shared/popup-service.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatPaginatorModule} from '@angular/material/paginator'; 
+import {MatTableModule} from '@angular/material/table'; 
+import {MatSortModule} from '@angular/material/sort';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatCardModule} from '@angular/material/card';
 
 
 import {
@@ -39,6 +47,11 @@ import {
   MatChipsModule
 
 } from '@angular/material';
+
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+// import { PapaParseModule } from 'papaparse';
+
+
 
 @NgModule({
   imports: [
@@ -63,13 +76,21 @@ import {
     MatDatepickerModule,
     MatMomentDateModule,
     MatDialogModule,
-    MatAutocompleteModule
-
+    MatAutocompleteModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatCardModule,
+    
+    // PapaParseModule,
     // AngularFirestore
   ],
   entryComponents: [PopupService],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
         // AngularFirestore
   ],
   declarations: [
@@ -81,7 +102,9 @@ import {
     MapsComponent,
     ChequesComponent,
     UpgradeComponent,
-    PopupService
+    // LoginPageComponent,
+    PopupService,
+    // LoginGuard
   ],
 })
 

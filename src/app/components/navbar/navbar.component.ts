@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ROUTES } from '../sidebar/sidebar.component';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
-import { Router } from '@angular/router';
-
+import { Router, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { NotificationsService } from '../../shared/notifications-service.service'
+import { FirebaseService } from '../../shared/firebase.service'
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -14,15 +15,36 @@ export class NavbarComponent implements OnInit {
       mobile_menu_visible: any = 0;
     private toggleButton: any;
     private sidebarVisible: boolean;
+    seenNotifications:boolean;
 
-    constructor(location: Location,  private element: ElementRef, private router: Router) {
-      this.location = location;
-          this.sidebarVisible = false;
+    constructor(
+                private activatedRoute: ActivatedRoute,
+                location: Location,  
+                private element: ElementRef, 
+                public notificationsService: NotificationsService, 
+                private router: Router, 
+                private firebaseService: FirebaseService) {
+        this.location = location;
+        this.sidebarVisible = false;
+        // var state = activatedRoute.snapshot;
     }
 
-    logOut(): void {
+    openNotifs(){
+        this.seenNotifications=!this.seenNotifications;
+        console.log("URL for this page...", this.activatedRoute.snapshot.url)  
+
+    }
+    logOut() {
         console.log("logging out...");
-        this.router.navigate(['/login']);
+        this.firebaseService.signOut().then((result) => {
+            this.notificationsService.showNotification(1, 'Signed out successfully.', 'Take care!', '');      
+            console.log("URL for this page...", this.activatedRoute.snapshot.url, "or", this.activatedRoute.url, "or", this.activatedRoute)  
+            this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url }});
+
+        }).catch((error) => {
+            this.notificationsService.showNotification(4, 'Error while signing out.', error, '');
+        })
+
     }
 
 

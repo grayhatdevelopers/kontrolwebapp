@@ -18,8 +18,9 @@ export class MapsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-
-    var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
+    // 33.640001, 72.922551
+    // 40.748817, -73.985428
+    var myLatlng = new google.maps.LatLng(33.640001, 72.922551);
     var mapOptions = {
         zoom: 13,
         center: myLatlng,
@@ -115,7 +116,7 @@ export class MapsComponent implements OnInit {
 
     var marker = new google.maps.Marker({
         position: myLatlng,
-        title: "Hello World!"
+        title: "Kontrol Headquarters"
     });
 
     // To add the marker to the map, call setMap();

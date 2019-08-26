@@ -1,0 +1,60 @@
+.example-container {
+    height: 270px;
+    overflow: auto;
+  }
+  
+table {
+width: 100%;
+}
+
+tr.mat-footer-row {
+font-weight: bold;
+}
+
+.mat-table-sticky {
+border-top: 1px solid #e0e0e0;
+}
+
+.shakeit:hover {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+      transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+      transform: translate3d(4px, 0, 0);
+  }
+}
+
+/*--------  Editable Cells  --------*/
+.selected {
+  border: 1px solid #698ad8;
+}
+.unselected {
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+/*---- Remove default browser behaviour after selecting cells ----*/
+.selected, .unselected {
+  -webkit-user-select: none; /* Webkit  */
+  -moz-user-select:    none; /* Firefox */
+  -ms-user-select:     none; /* IE 10   */
+  -o-user-select:      none; /* Currently not supported in Opera but will be soon */
+  user-select:         none;
+}
+/*--------End Editable Cells--------*/

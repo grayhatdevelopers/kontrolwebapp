@@ -6,12 +6,13 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyADOX3o2EjG_ypy3iiJrRzwjSNR3Op5ShI",
-    authDomain: "kontrol-4be9e.firebaseapp.com",
-    databaseURL: "https://kontrol-4be9e.firebaseio.com",
-    projectId: "kontrol-4be9e",
-    storageBucket: "kontrol-4be9e.appspot.com",
-    messagingSenderId: "338022882404",
-    appId: "1:338022882404:web:4dce0b661f581496"
+    apiKey: "AIzaSyBOgJ8VisLrd_DQfLn_iA5NDZLUH8eZ4l4",
+    authDomain: "kontrolkotlin.firebaseapp.com",
+    databaseURL: "https://kontrolkotlin.firebaseio.com",
+    projectId: "kontrolkotlin",
+    storageBucket: "kontrolkotlin.appspot.com",
+    messagingSenderId: "57791833188",
+    appId: "1:57791833188:web:f9496024437c80f9"
   }
 };
+

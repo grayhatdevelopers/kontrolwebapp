@@ -23,10 +23,15 @@ import { CustomerCardsComponent } from './customercards/customercards.component'
 import { MapsComponent } from './maps/maps.component';
 import {  } from './cheques/cheques-panel.component';
 import { UpgradeComponent } from './pages/upgrade.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 import {
   AgmCoreModule
 } from '@agm/core';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { PageLayoutComponent } from './layouts/page-layout/page-layout.component';
+import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layout.component';
+// import { GeneralComponent } from './components_settings/general/general/general.component';
+
 
 @NgModule({
   imports: [
@@ -38,7 +43,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
     RouterModule,
     AppRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: 'YOUR_GOOGLE_MAPS_API_KEY'
+      apiKey: 'AIzaSyDdC1qJU_73pzIorsUOypZ2sY6zgitSiYs'
     }),
     
     AngularFireModule.initializeApp(environment.firebase),
@@ -49,6 +54,11 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
   declarations: [
     AppComponent,
     AdminLayoutComponent,
+    PageLayoutComponent,
+    SettingsLayoutComponent,
+    // UsersComponent,
+    // GeneralComponent,
+    // LoginPageComponent,
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]

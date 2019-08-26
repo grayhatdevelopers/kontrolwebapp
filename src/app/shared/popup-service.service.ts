@@ -18,7 +18,17 @@ export interface DialogData {
 export class PopupService {
   constructor(
     public dialogRef: MatDialogRef<PopupService>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  let audio = new Audio();
+  let name = 'popup'; 
+  audio.src = "../../assets/audio/" + name + ".mp3";
+  audio.load();
+  audio.play();
+
+
+  }
+
+
 
   onNoClick(): void {
     this.dialogRef.close();
