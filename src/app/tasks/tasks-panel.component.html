@@ -50,7 +50,7 @@
                           <div class="row">
                               <div class="col-md-9">
                                     <mat-form-field class="example-full-width">
-                                            <input type="text" placeholder="Select Client..." aria-label="Number" matInput formControlName="client" [matAutocomplete]="auto">
+                                            <input type="text" placeholder="Select Client..." aria-label="Number" matInput formControlName="client_new" [matAutocomplete]="auto">
                                             <mat-autocomplete #auto="matAutocomplete">
                                               <mat-option *ngFor="let client of filteredClients" [value]="client">
                                                 {{client}}
@@ -63,8 +63,8 @@
                                       <mat-label>REP</mat-label>
                                       <mat-select formControlName="selectedOfficer_new" name="option">
                                           <!-- <div *ngFor = "let option of supplyOfficersList"> -->
-                                        <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector.rep">{{supplyselector.rep}}</mat-option>
-                                    </mat-select>
+                                              <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector.REP">{{supplyselector.REP}}</mat-option>
+                                            </mat-select>
                                     </mat-form-field>
                               </div>
                           </div>
@@ -145,7 +145,7 @@
                       <mat-form-field>
                         <mat-label>REP</mat-label>
                         <mat-select  name="option">
-                          <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector">{{supplyselector.rep}}</mat-option>
+                          <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector.REP">{{supplyselector.REP}}</mat-option>
                       </mat-select>
                       </mat-form-field>
 
@@ -326,13 +326,13 @@
 
                                 <ng-container matColumnDef="Company">
                                         <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> KEUNE </mat-cell>
+                                        <mat-cell *matCellDef="let row"> {{row.company}} </mat-cell>
                                       </ng-container>
                               
                                 <!-- Age Definition -->
                                 <ng-container matColumnDef="Shop">
                                   <mat-header-cell *matHeaderCellDef mat-sort-header>Shop</mat-header-cell>
-                                  <mat-cell *matCellDef="let row"> {{row.shop}} </mat-cell>
+                                  <mat-cell *matCellDef="let row"> {{row.shopName}} </mat-cell>
                                 </ng-container>
 
                                 <ng-container matColumnDef="REP">
@@ -346,8 +346,8 @@
                                 </ng-container>
 
                                 <ng-container matColumnDef="Type">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
-                                    <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Task Model </mat-header-cell>
+                                    <mat-cell *matCellDef="let row"> {{row.taskModel}} </mat-cell>
                                     </ng-container>
                               
                                 <ng-container matColumnDef="Task Type">

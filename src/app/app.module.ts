@@ -30,6 +30,8 @@ import {
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { PageLayoutComponent } from './layouts/page-layout/page-layout.component';
 import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layout.component';
+// import { CustomersComponent } from './components_settings/customers/customers.component';
+// import { TasksComponent } from './components_settings/tasks/tasks.component';
 // import { GeneralComponent } from './components_settings/general/general/general.component';
 
 
@@ -56,6 +58,8 @@ import { SettingsLayoutComponent } from './layouts/settings-layout/settings-layo
     AdminLayoutComponent,
     PageLayoutComponent,
     SettingsLayoutComponent,
+    // CustomersComponent,
+    // TasksComponent,
     // UsersComponent,
     // GeneralComponent,
     // LoginPageComponent,

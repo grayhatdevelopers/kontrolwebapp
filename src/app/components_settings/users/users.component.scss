@@ -1,0 +1,111 @@
+
+.example-container {
+    position: relative;
+    min-height: 200px;
+  }
+  
+  .example-table-container {
+    position: relative;
+    max-height: 300px;
+    overflow: auto;
+  }
+  
+table {
+    width: 100%;
+  }
+  
+  tr.example-detail-row {
+    height: 0;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):hover {
+    background: #777;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  }
+  
+  .example-element-row td {
+    border-bottom-width: 0;
+  }
+  
+  .example-element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+  
+  .example-element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+    height: 104px;
+  }
+  
+  .example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+  }
+  
+  .example-element-description {
+    padding: 16px;
+  }
+  
+  .example-element-description-attribution {
+    opacity: 0.5;
+  }
+
+//   .round {
+//     border-radius: 50%;
+//     overflow: hidden;
+//     width: 150px;
+//     height: 150px;
+// }
+// .round img {
+//     display: block;
+// /* Stretch 
+//       height: 100%;
+//       width: 100%; */
+// min-width: 100%;
+// min-height: 100%;
+// }
+
+// .cropcircle{
+//   width: 250px;
+//   height: 250px;
+//   border-radius: 100%;
+//   background: #eee no-repeat center;
+//   background-size: cover;
+// }
+
+// .card-avatar {
+//   margin: -50px auto 0;
+//   border-radius: 50%;
+//   overflow: hidden;
+//   padding: 0;
+
+//   img {
+//       width: 100%;
+//       height: auto;
+//   }
+// }
+
+
+.rounded {
+  object-fit: cover;
+  border-radius: 50%;
+  height: 80px;
+  width: 80px;
+}
+
+.circle-cropper {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  border-radius: 50%;
+  width: 100%;
+  padding-top: 100%;
+}

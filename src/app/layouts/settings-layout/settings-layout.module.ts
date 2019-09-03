@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+// import { CommonModule } from '@angular/common';  
+// import { BrowserModule } from '@angular/platform-browser';
 
 import { SettingsLayoutRoutes } from './settings-layout.routing';
 // import { LoginPageComponent } from '../../pages/login-page/login-page.component'
@@ -40,12 +41,14 @@ import {
 
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatStepperModule} from '@angular/material/stepper';
 
 
 import { PopupService } from 'app/shared/popup-service.service';
 import { GeneralComponent } from 'app/components_settings/general/general.component';
 import { UsersComponent } from '../../components_settings/users/users.component';
-
+import { TasksComponent } from '../../components_settings/tasks/tasks.component'
+import { CustomersComponent } from '../../components_settings/customers/customers.component';
 // import { PapaParseModule } from 'papaparse';
 
 
@@ -53,6 +56,7 @@ import { UsersComponent } from '../../components_settings/users/users.component'
 @NgModule({
   imports: [
     CommonModule,
+    // BrowserModule,
     RouterModule.forChild(SettingsLayoutRoutes),
 
 
@@ -81,7 +85,8 @@ import { UsersComponent } from '../../components_settings/users/users.component'
     MatCheckboxModule,
     MatMenuModule,
     MatCardModule,
-    MatDividerModule
+    MatDividerModule,
+    MatStepperModule,
     // PapaParseModule,
     // AngularFirestore
   ],
@@ -95,6 +100,8 @@ import { UsersComponent } from '../../components_settings/users/users.component'
   declarations: [
     GeneralComponent,
     UsersComponent,
+    TasksComponent,
+    CustomersComponent,
     // LoginPageComponent,
     // PopupService
   ],

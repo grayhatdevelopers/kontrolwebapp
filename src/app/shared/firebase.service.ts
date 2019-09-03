@@ -11,10 +11,17 @@ import { NotificationsService } from './notifications-service.service';
 import * as firebase from 'firebase';
 import { UrlTree } from '@angular/router';
 import { Profile } from 'selenium-webdriver/firefox';
+import { User } from 'app/components_settings/users/user';
+import * as moment from 'moment';
 
-export interface UserProfile{
-  displayName:string;
-  photoUrl:string;
+export class UserProfile{
+  // displayName:string;
+  // photoUrl:string;
+  constructor (
+    public displayName= "",
+    public photoUrl= ""
+  ){}
+  // test:string;
 }
 
 @Injectable(
@@ -31,11 +38,11 @@ export class FirebaseService {
   }
 
 
-  getKEUNETasks() {
+  getActiveTasks() {
     return this.db.list
-  ("Tasks/KEUNE").valueChanges().pipe(
+  ("TASKS").valueChanges().pipe(
         // map(data=>data as any),
-        tap(data => console.log('createKEUNETasks: ' + JSON.stringify(data))),
+        tap(data => console.log('createTasks: ' + JSON.stringify(data))),
         catchError(this.handleError)
       );
   }
@@ -77,7 +84,7 @@ export class FirebaseService {
       );
   }
 
-  getSupplyOfficers() {
+  getEmployees() {
     return this.db.list('Employees')
       .valueChanges().pipe(
         // map(data=>data as any),
@@ -96,6 +103,10 @@ export class FirebaseService {
   
   }  
 
+  getUsers(){
+  //  firebase.auth(). 
+  }
+
   searchUsers(searchValue) {
     // return this.db.collection('users',ref => ref.where('nameToSearch', '>=', searchValue)
     //   .where('nameToSearch', '<=', searchValue + '\uf8ff'))
@@ -106,20 +117,23 @@ export class FirebaseService {
     // return this.db.collection('users',ref => ref.orderBy('age').startAt(value)).snapshotChanges();
   }
 
-  createNewTask(newTask: Task, Company: string) {
+  createNewTask(newTask: Task) {
     var newPostKey = this.db.database.ref().child('posts').push().key;
 
-    return this.db.database.ref('Tasks/' + Company + '/' + newPostKey).set({
+    return this.db.database.ref('TASKS/' + newPostKey).set({
       assignedTo: newTask.assignedTo,
-      date: newTask.Date,
-      debit: newTask.Debit,
-      num: "1212",
-      rep: newTask.Rep,
-      shop: newTask.Shop,
-      status: newTask.Status,
+      createdAt: moment().unix(),
+      date: newTask.date,   
+      debit: newTask.debit,
+      lastUpdatedAt: '',
+      num: newTask.num,
+      rep: newTask.rep,
+      shopName: newTask.shopName,
+      status: "UNDONE",
+      taskModel: newTask.taskModel,
       taskType: newTask.taskType,
-      transference: newTask.Transference,
-      type: newTask.Type
+      transference: "1",
+      company: newTask.company,
     });
 
     
@@ -135,18 +149,37 @@ export class FirebaseService {
 
   deleteTask(taskKey) {
     // this.db.database.ref().orde
-    return this.db.database.ref('Tasks/' + "KEUNE" + "/" + taskKey).remove;
+    return this.db.database.ref('TASKS/' + taskKey).remove;
   }
 
 
 
-  createUser(email, password, displayName, photoUrl){
-    return firebase.auth().createUserWithEmailAndPassword(email, password).then((result) => {
+  createUser(newUser:User){
+    // var newPostKey = this.db.database.ref().child('posts').push().key;
+
+    firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password).then((result) => {
       // firebase.auth().
-      let extraInfo: UserProfile;
-      extraInfo.displayName=displayName;
-      extraInfo.photoUrl=photoUrl;
+      let extraInfo = new UserProfile (newUser.displayName, newUser.photoUrl);
+      // photoUrl="https://images3.memedroid.com/images/UPLOADED504/5ce445b0138c8.jpeg";
+      // extraInfo["displayName"]=newUser.displayName;
+      // extraInfo.photoUrl=newUser.photoUrl;
+      // extraInfo.test="Hello World";
+      //toDo: Check whether this test actually gets uploaded and results in normal user functionality. Could store Role, isOnline, CollectedAmount, TotalCollectedAmount, REPName
       result.user.updateProfile(extraInfo);
+      this.db.database.ref('Employees/' + newUser.displayName).set({
+        REP: newUser.REP, 
+        collectedCash: 0, 
+        completedTasks: 0,
+        isOnline: false,
+      }).then().catch((error) =>{
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        this.notificationsService.showNotification(4, "Encountered an error while updating user details.", errorCode + errorMessage)
+  
+      });
+      this.notificationsService.showNotification(2, "User created successfully.", "Click here to open the User's info page.", "")
+
+      // result.user.
     }).catch((error)=> {
       // Handle Errors here.
       var errorCode = error.code;
@@ -223,7 +256,7 @@ export class FirebaseService {
     // return returnTo;
   }
 
-  private handleError(err) {
+  handleError(err) {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console
     let errorMessage: string;

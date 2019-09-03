@@ -1,0 +1,66 @@
+<!-- <div class="main-content bg"> -->
+  <div class="container-fluid">   
+    <div class="main-div">  
+        <div class="col-md-12">
+          <mat-card>
+            <mat-card-title>Customers</mat-card-title>
+            <mat-card-subtitle>Change existing Customer details or create a new Customer</mat-card-subtitle>
+            <mat-card-content>
+            <!-- <mat-card-title> -->
+            <!-- <div class="row">
+                <div class="col-md-6"> -->
+                  <h5><b>FIELD NAMES</b></h5>
+                  <!-- <p>Hello world</p> -->
+                  <!-- <mat-table> -->
+
+                    
+                  <!-- </mat-table> -->
+            <!-- </mat-card> -->
+                <!-- </div> -->
+                <!-- <div class="col-md-6"> -->
+                    <!-- </mat-card-title> -->
+                <!-- </div> -->
+            <!-- </div> -->
+            <mat-divider [inset]="true"></mat-divider>
+            <h5><b>CUSTOMER CREATION SETTINGS</b></h5>
+            <div *ngFor="let setting of creation_settings">
+            <div class="form-check">
+              <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" value="">
+                  {{setting.description}}
+                  <span class="form-check-sign">
+                      <span class="check"></span>
+                  </span>
+              </label>
+            </div>
+          </div>
+          <mat-divider [inset]="true"></mat-divider>
+          <h5><b>MERGE CUSTOMER RECORDS</b></h5>
+          <p><i>This action will add Debit and Total Collection values of both Customers. The other information of the first will be kept while that of the second will be deleted.</i></p>
+            <!-- header: true,
+            transformHeader: undefined,
+            dynamicTyping: true,
+            preview: 0,
+            encoding: "",
+            worker: false,
+            comments: false,
+            step: undefined,
+            download: false,
+            downloadRequestHeaders: undefined,
+            chunk: undefined,
+            beforeFirstChunk: undefined,
+            withCredentials: undefined,
+            transform: undefined, -->
+            <mat-divider [inset]="true"></mat-divider>
+            <h5><b>ADD A NEW CUSTOMER</b></h5>
+
+            <mat-divider [inset]="true"></mat-divider>
+            <h5><b>EDIT CUSTOMER RECORD</b></h5>
+            
+
+            </mat-card-content>
+          </mat-card>
+        </div>
+    </div>
+  </div>
+<!-- </div> -->

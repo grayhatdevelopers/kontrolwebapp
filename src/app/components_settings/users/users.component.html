@@ -3,23 +3,226 @@
     <div class="main-div">  
         <div class="col-md-12">
           <mat-card>
-            <mat-card-title>
-              Manage Users Within Kontrol
-            </mat-card-title>
+            <mat-card-title>Users</mat-card-title>
+            <mat-card-subtitle>Manage Users within your Kontrol workspace</mat-card-subtitle>
             <mat-card-content>
             <!-- <mat-card-title> -->
             <div class="row">
+              
                 <div class="col-md-6">
                   <h5><b>MANAGE EMPLOYEES</b></h5>
+                  <div class="example-container mat-elevation-z8">
+                    <div class="example-table-container">
+
+                  <table mat-table
+       [dataSource]="dataSource_employees" multiTemplateDataRows
+       class="mat-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column}}</th>
+    <td mat-cell *matCellDef="let element"> 
+        <div *ngIf="column=='role'">
+            <mat-form-field>
+          <mat-select>
+                <mat-option value="{{element[column]}}">{{element[column]}}</mat-option>
+                <mat-option value="saab">Saab</mat-option>
+                <mat-option value="mercedes">Mercedes</mat-option>
+                <mat-option value="audi">Audi</mat-option>
+              </mat-select>
+            </mat-form-field>
+            </div>  
+            <div *ngIf="column!='role'">
+                {{element[column]}}
+                
+              </div>
+    </td>
+
+    <td mat-footer-cell *matFooterCellDef [attr.colspan]="columnsToDisplay.length"> 
+    <div *ngIf = "column == 'email'">      
+        <button mat-flat-button color="primary" align="end">ADD USER</button>
+
+    <!-- </div> -->
+    <!-- <div *ngIf = "column == 'role'">  -->
+        <button mat-flat-button color="success" align="end" disabled>APPLY CHANGES</button>
+
+        <!-- <i class="material-icons">add</i> -->
+    </div>    
+    </td>
+
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        
+           <img src="{{element.photoUrl}}" class="rounded">
+
+        <div class="example-element-description">
+          {{element.description}}
+          <span class="example-element-description-attribution"> -- Wikipedia </span>
+        </div>
+      </div>
+    </td>
+    <td mat-footer-cell *matFooterCellDef></td>
+
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+  <tr mat-footer-row *matFooterRowDef="columnsToDisplay; sticky:true"></tr>
+</table>
             <!-- </mat-card> -->
                 </div>
+              </div>
+            </div>
+
+
+
+
+
                 <div class="col-md-6">
                     <h5><b>MANAGE ADMINISTRATION</b></h5>
+                    <div class="example-container mat-elevation-z8">
+                      <div class="example-table-container">
                     <!-- </mat-card-title> -->
+                    <table mat-table
+       [dataSource]="dataSource_employees" multiTemplateDataRows
+       class="mat-elevation-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let element"> 
+
+      <div *ngIf="column=='role'">
+        <mat-form-field>
+      <select matNativeControl>
+            <option value="{{element[column]}}">{{element[column]}}</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          </select>
+        </mat-form-field>
+        </div>
+        <div *ngIf="column!='role'">
+          {{element[column]}}
+          
+        </div>
+
+      <!-- {{element[column]}}  -->
+    
+    </td>
+    <td mat-footer-cell *matFooterCellDef>  <button mat-icon-button aria-label="Example icon-button with a heart icon">
+        <i class="material-icons">add</i>
+      </button></td>
+
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <!-- <div class="example-element-diagram"> -->
+          <!-- <div class="example-element-position"> -->
+            <!-- <div class="round"> -->
+              <!-- <div class="cropcircle">  -->
+            
+                  <img src="{{element.photoUrl}}" class="rounded">
+
+
+                  <!-- <div class="card-avatar">
+                      <a href="javascript:void(0)">
+                          <img class="img" src="{{element.photoUrl}}" />
+                      </a>
+                  </div> -->
+                <!-- <img src=> -->
+          <!-- </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
+        <!-- </div> -->
+        <div class="example-element-description">
+          {{element.description}}
+          <span class="example-element-description-attribution"> -- Wikipedia </span>
+        </div>
+      </div>
+    </td>
+    <td mat-footer-cell *matFooterCellDef></td>
+
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <tr mat-footer-row *matFooterRowDef="columnsToDisplay"></tr>
+  <!-- <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
+  <!-- <tr mat-row *matRowDef="" class="example-detail-row"></tr> -->
+</table>
+                    </div>
+                  </div>
                 </div>
             </div>
-            <mat-divider [inset]="true"></mat-divider>
-
+            <br><br>
+            <mat-divider></mat-divider>
+            <h5><b>Add User</b></h5>
+            
+            <form [formGroup]="addUserFormGroup">
+            
+            <mat-horizontal-stepper linear #stepper>
+              <mat-step errorMessage="Name is required.">
+                  <ng-template matStepLabel>User Details</ng-template>
+                  <mat-form-field>
+                    <input matInput placeholder="Username" formControlName="displayName" required>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input type="email" matInput placeholder="Email address" formControlName="email" required>
+                  </mat-form-field>
+                  <div>
+                    <button mat-button matStepperNext type="button">Next</button>
+                  </div>
+                <!-- </form> -->
+              </mat-step>
+              <mat-step errorMessage="Password is required.">
+                <!-- <form [formGroup]="addUserFormGroup"> -->
+                  <ng-template matStepLabel>Password</ng-template>
+                  <mat-form-field>
+                    <input type="password" matInput placeholder="Password" formControlName="password" required>
+                  </mat-form-field>
+                  <div>
+                    <button mat-button matStepperPrevious type="button">Back</button>
+                    <button mat-button matStepperNext type="button">Next</button>
+                  </div>
+              </mat-step>
+              <mat-step errorMessage="REP is required.">
+                <!-- <form [formGroup]="addUserFormGroup"> -->
+                  <ng-template matStepLabel>REP</ng-template>
+                  <mat-form-field>
+                    <input type="text" matInput placeholder="REP" formControlName="REP" required>
+                  </mat-form-field>
+                  <div>
+                    <button mat-button matStepperPrevious type="button">Back</button>
+                    <button mat-button matStepperNext type="button">Next</button>
+                  </div>
+              </mat-step>
+              <mat-step>
+                <ng-template matStepLabel>Done</ng-template>
+                You are now done.
+                <div>
+                  <button mat-button matStepperPrevious type="button">Back</button>
+                  <button mat-button (click)="submit_newUser()" type="button">Reset</button>
+                </div>
+              </mat-step>
+            </mat-horizontal-stepper>                
+          </form>
             </mat-card-content>
           </mat-card>
         </div>

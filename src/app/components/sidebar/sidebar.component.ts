@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 declare const $: any;
 declare interface RouteInfo {
@@ -37,4 +38,7 @@ export class SidebarComponent implements OnInit {
       }
       return true;
   };
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.menuItems, event.previousIndex, event.currentIndex);
+  }
 }

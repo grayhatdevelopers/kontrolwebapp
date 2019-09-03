@@ -119,7 +119,7 @@ export class TasksPanelComponent implements OnInit, AfterViewInit{
       this.newtaskForm = this.formBuilder.group({
         company_new: ['', Validators.required],
         date_new: ['', Validators.required],
-        client: ['', Validators.required],
+        client_new: ['', Validators.required],
         selectedOfficer_new: ['', Validators.required],
         type_new: ['', Validators.required],
         debit_new: ['', Validators.required],
@@ -141,21 +141,21 @@ export class TasksPanelComponent implements OnInit, AfterViewInit{
   ngOnInit() {
 
     this.firebaseService.getClients().subscribe(clients => {
-      this.clients = clients
+      this.clients = clients;
       this.filteredClients = clients;
     });
 
-    this.newtaskForm.controls.client.valueChanges.subscribe(value => {
+    this.newtaskForm.controls.client_new.valueChanges.subscribe(value => {
       this.filteredClients = this._filter(value);
     })
 
-    this.firebaseService.getSupplyOfficers()
+    this.firebaseService.getEmployees()
       .subscribe((result: any) => {
         this.supplyOfficerList = result;
-        console.log(`Got Clients: ${this.supplyOfficerList}`);
+        console.log(`Got Employees: ${this.supplyOfficerList}`);
     })
 
-    this.firebaseService.getKEUNETasks()
+    this.firebaseService.getActiveTasks()
       .subscribe((result: any) => {
         this.allTasksList = result;
         this.dataSource = new MatTableDataSource<Task>(this.allTasksList);
@@ -170,7 +170,7 @@ export class TasksPanelComponent implements OnInit, AfterViewInit{
         // this.dataSource.sort = this.sort;
         // this.dataSource.paginator = this.paginator;
         
-        console.log(`Got KEUNE Tasks: ${this.allTasksList}`);
+        console.log(`Got Tasks: ${this.allTasksList}`);
       },err=>{
         console.log("error caught");
         this.notificationsService.showNotification(3,'ERROR',"ERROR");
@@ -252,16 +252,16 @@ export class TasksPanelComponent implements OnInit, AfterViewInit{
     let finalDate: string = day + "-" + month + "-" + year;
     console.log ("The date is now", finalDate);
     // var newTask: Task=(this.newtaskForm.controls['type_new'].value, this.newtaskForm.controls['client'].value), finaldate=finalDate, date="123", selectedboi=this.newtaskForm.controls['selectedOfficer_new'].value, debitboi=this.newtaskForm.controls['debit_new'].value, statusboi='UNDONE', assignedboi=this.newtaskForm.controls['selectedOfficer_new'].value, tranboi="0", tasktypeboi=this.newtaskForm.controls['taskType_new'].value);
-    let newTask= new Task(this.newtaskForm.controls['type_new'].value,this.newtaskForm.controls['client'].value, finalDate, "123", this.newtaskForm.controls['selectedOfficer_new'].value, this.newtaskForm.controls['debit_new'].value, 'UNDONE', this.newtaskForm.controls['selectedOfficer_new'].value, '1', this.newtaskForm.controls['taskType_new'].value);
+    let newTask= new Task( this.newtaskForm.controls['selectedOfficer_new'].value, "", this.newtaskForm.controls['date'].value,this.newtaskForm.controls['client'].value, finalDate, "123", this.newtaskForm.controls['selectedOfficer_new'].value, this.newtaskForm.controls['debit_new'].value, 'UNDONE', this.newtaskForm.controls['selectedOfficer_new'].value, '1', this.newtaskForm.controls['taskType_new'].value);
     
     console.log(newTask);
     var DialogRef: any;
-    DialogRef = this.openDialog('? Preview your new task.', `COMPANY: ${this.newtaskForm.controls['company_new'].value} <br>
-                                                      DATE: ${newTask.Date} <br> 
-                                                      CLIENT: ${newTask.Shop} <br> 
-                                                      REP: ${newTask.Rep} <br> 
-                                                      Type: ${newTask.Type} <br> 
-                                                      Debit: ${newTask.Debit} <br> 
+    DialogRef = this.openDialog('? Preview your new task.', `COMPANY: ${newTask.company} <br>
+                                                      DATE: ${newTask.date} <br> 
+                                                      CLIENT: ${newTask.shopName} <br> 
+                                                      REP: ${newTask.rep} <br> 
+                                                      Type: ${newTask.taskModel} <br> 
+                                                      Debit: ${newTask.debit} <br> 
                                                       Task Type: ${newTask.taskType} <br> 
                                                       Extra Details:`, '', '');
 
@@ -269,7 +269,7 @@ export class TasksPanelComponent implements OnInit, AfterViewInit{
       console.log(`The dialog was closed, ${result}`);
 
       if (result) {
-        var createdTask = this.firebaseService.createNewTask(newTask, this.newtaskForm.controls['company_new'].value);
+        var createdTask = this.firebaseService.createNewTask(newTask);
         createdTask.then((result) => {
              this.notificationsService.showNotification(2, 'Task created!', 'Click here to open the task in full detail.', 'customercards');
                  }).catch( (error) => {
