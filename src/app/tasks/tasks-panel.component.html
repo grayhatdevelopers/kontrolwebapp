@@ -55,6 +55,9 @@
                                               <mat-option *ngFor="let client of filteredClients" [value]="client">
                                                 {{client}}
                                               </mat-option>
+                                              <div *ngIf = "this.newtaskForm.controls['client_new'].value.length > 3 && filteredClients.length != 1">
+                                              <mat-option [value]="this.newtaskForm.controls['client_new'].value" (click)='submit_newCustomerDefault()'><i class="material-icons">add</i> Create new Shop <strong>"{{this.newtaskForm.controls["client_new"].value}}"</strong> </mat-option>
+                                              </div>
                                             </mat-autocomplete>
                                           </mat-form-field>
                               </div>
@@ -71,8 +74,8 @@
                             <div class="row">
                               <div class="col-md-3">
                                 <mat-form-field>
-                                  <mat-label>Type</mat-label>
-                                  <mat-select formControlName="type_new">
+                                  <mat-label>Task Model</mat-label>
+                                  <mat-select formControlName="taskModel_new">
                                     <mat-option [value]="'Order'">Order</mat-option>
                                     <mat-option [value]="'Payment'">Payment</mat-option>
                                     <mat-option [value]="'Return'">Return</mat-option>
@@ -309,83 +312,202 @@
                                                 <mat-spinner></mat-spinner>
                                             </div> -->
                     <div class="mat-elevation-z8"></div>
-                    <mat-table mat-table [dataSource]="dataSource" matSort>
+                    
+                    <mat-tab-group>
+                      <mat-tab label="ACTIVE TASKS">  <mat-table mat-table [dataSource]="dataSource" matSort>
 
 
                         
-                                <!-- User name Definition -->
-                                <ng-container matColumnDef="Task ID">
-                                  <mat-header-cell *matHeaderCellDef mat-sort-header>Task ID</mat-header-cell>
-                                  <mat-cell *matCellDef="let row"> {{row.num}} </mat-cell>
+                        <!-- User name Definition -->
+                        <ng-container matColumnDef="Task ID">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Task ID</mat-header-cell>
+                          <mat-cell *matCellDef="let row"> {{row.num}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Date">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.date}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Company">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.company}} </mat-cell>
+                              </ng-container>
+                      
+                        <!-- Age Definition -->
+                        <ng-container matColumnDef="Shop">
+                          <mat-header-cell *matHeaderCellDef mat-sort-header>Shop</mat-header-cell>
+                          <mat-cell *matCellDef="let row"> {{row.shopName}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="REP">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> REP </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.rep}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Debit">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Debit </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> <b>Rs. </b>{{row.debit}} </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="Type">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Task Model </mat-header-cell>
+                            <mat-cell *matCellDef="let row"> {{row.taskModel}} </mat-cell>
+                            </ng-container>
+                      
+                        <ng-container matColumnDef="Task Type">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Task Type </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.taskType}} </mat-cell>
                                 </ng-container>
 
-                                <ng-container matColumnDef="Date">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> {{row.date}} </mat-cell>
-                                </ng-container>
+                        <ng-container matColumnDef="Status">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+                                <mat-cell *matCellDef="let row"> 
+                                  <div *ngIf = "row.status === 'DONE'">
+                                    <mat-chip-list aria-label="Fish selection">
+                                                <mat-chip color="success" selected>{{row.status}}</mat-chip>
+                                                </mat-chip-list>
+                                    </div>             
 
-                                <ng-container matColumnDef="Company">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> {{row.company}} </mat-cell>
-                                      </ng-container>
-                              
-                                <!-- Age Definition -->
-                                <ng-container matColumnDef="Shop">
-                                  <mat-header-cell *matHeaderCellDef mat-sort-header>Shop</mat-header-cell>
-                                  <mat-cell *matCellDef="let row"> {{row.shopName}} </mat-cell>
-                                </ng-container>
+                                    <div *ngIf = "row.status === 'UNDONE'">
+                                    <mat-chip-list aria-label="Fish selection">
+                                        <mat-chip class="fail" selected>{{row.status}}</mat-chip>
+                                      </mat-chip-list>
+                                    </div>
 
-                                <ng-container matColumnDef="REP">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header> REP </mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> {{row.rep}} </mat-cell>
-                                </ng-container>
+                                    <div *ngIf = "row.status === 'WAITING'">
+                                        <mat-chip-list aria-label="Fish selection">
+                                            <mat-chip class="warn" selected>{{row.status}}</mat-chip>
+                                          </mat-chip-list>
+                                        </div>
+                                </mat-cell>
+                        </ng-container>
+                        <!-- Title Definition -->
+                            <ng-container matColumnDef="Actions">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+                                    <mat-cell *matCellDef="let row"> 
+                                            <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                    <i class="material-icons">info</i>
+                                                </button>
+                                                
+                                                <div *ngIf = "row.status === 'WAITING'">
+                                                <button mat-raised-button type="button" matTooltip="Verify Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon" (click)="verifyTask(row.num, row.shopName)">
+                                                    <i class="material-icons">done_outline</i>
+                                                </button> 
+                                              </div>
 
-                                <ng-container matColumnDef="Debit">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header> Debit </mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> <b>Rs. </b>{{row.debit}} </mat-cell>
-                                </ng-container>
+                                              <div *ngIf = "row.status != 'WAITING'">
+                                            <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon" [disabled]="row.status != 'UNDONE'">
+                                                <i class="material-icons">edit</i>
+                                            </button> 
+                                              </div>
 
-                                <ng-container matColumnDef="Type">
-                                    <mat-header-cell *matHeaderCellDef mat-sort-header> Task Model </mat-header-cell>
-                                    <mat-cell *matCellDef="let row"> {{row.taskModel}} </mat-cell>
+                                        <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="deleteTask(row.num, row.status, row.shopName, row.debit)">
+                                                <i class="material-icons">close</i>
+                                            </button>
+                                    
+                                    </mat-cell>
+                                  </ng-container>
+                      
+                        <!-- Header and Row Declarations -->
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>  
+                  </mat-tab>
+                      <mat-tab label="COMPLETED TASKS"> 
+                      
+                          <mat-table mat-table [dataSource]="dataSource_completed" matSort>
+
+
+                        
+                              <!-- User name Definition -->
+                              <ng-container matColumnDef="Task ID">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Task ID</mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.taskNum}} </mat-cell>
+                              </ng-container>
+      
+                              <ng-container matColumnDef="Date">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> {{row.time}} </mat-cell>
+                              </ng-container>
+      
+                              <ng-container matColumnDef="Company">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header>Company</mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> {{row.company}} </mat-cell>
                                     </ng-container>
-                              
-                                <ng-container matColumnDef="Task Type">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header> Task Type </mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> {{row.taskType}} </mat-cell>
+                            
+                              <!-- Age Definition -->
+                              <ng-container matColumnDef="Shop">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Shop</mat-header-cell>
+                                <mat-cell *matCellDef="let row"> {{row.shopName}} </mat-cell>
+                              </ng-container>
+      
+                              <ng-container matColumnDef="REP">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header> Delivery by </mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> {{row.deliveredBy}} </mat-cell>
+                              </ng-container>
+      
+                              <ng-container matColumnDef="Debit">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header> Paid Amount </mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> <b>Rs. </b>{{row.paidAmount}} </mat-cell>
+                              </ng-container>
+      
+                              <ng-container matColumnDef="Type">
+                                  <mat-header-cell *matHeaderCellDef mat-sort-header> Task Model </mat-header-cell>
+                                  <mat-cell *matCellDef="let row"> {{row.taskModel}} </mat-cell>
+                                  </ng-container>
+                            
+                              <ng-container matColumnDef="Task Type">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header> Task Type </mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> {{row.taskType}} </mat-cell>
+                                      </ng-container>
+      
+                              <ng-container matColumnDef="Status">
+                                      <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+                                      <mat-cell *matCellDef="let row"> 
+                                        <div *ngIf = "row.status === 'TAKEN'">
+                                          <mat-chip-list aria-label="Fish selection">
+                                                      <mat-chip color="success" selected>{{row.status}}</mat-chip>
+                                                      </mat-chip-list>
+                                          </div>             
+      
+                                          <div *ngIf = "row.status === 'PARTIALLY_TAKEN'">
+                                          <mat-chip-list aria-label="Fish selection">
+                                              <mat-chip class="fail" selected>{{row.status}}</mat-chip>
+                                            </mat-chip-list>
+                                          </div>
+      
+                                          <div *ngIf = "row.status != 'TAKEN' && row.status != 'PARTIALLY_TAKEN'">
+                                              <mat-chip-list aria-label="Fish selection">
+                                                  <mat-chip class="warn" selected>{{row.status}}</mat-chip>
+                                                </mat-chip-list>
+                                              </div>
+                                      </mat-cell>
+                              </ng-container>
+                              <!-- Title Definition -->
+                                  <ng-container matColumnDef="Actions">
+                                          <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+                                          <mat-cell *matCellDef="let row"> 
+                                                  <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                                          <i class="material-icons">info</i>
+                                                      </button>
+                                              <!-- <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="deleteTask(row.num, row.status, row.shopName, row.debit)">
+                                                      <i class="material-icons">close</i>
+                                                  </button> -->
+                                          
+                                          </mat-cell>
                                         </ng-container>
-
-                                <ng-container matColumnDef="Status">
-                                        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
-                                        <mat-cell *matCellDef="let row"> 
-
-                                            <mat-chip-list aria-label="Fish selection">
-                                                        <mat-chip color="fail" selected>{{row.status}}</mat-chip>
-                                                        </mat-chip-list>
-                                            
-                                        </mat-cell>
-                                </ng-container>
-                                <!-- Title Definition -->
-                                    <ng-container matColumnDef="Actions">
-                                            <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
-                                            <mat-cell *matCellDef="let row"> 
-                                                    <button mat-raised-button type="button" matTooltip="Task Info" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
-                                                            <i class="material-icons">info</i>
-                                                        </button>
-                                                    <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon">
-                                                        <i class="material-icons">edit</i>
-                                                    </button>
-                                                <button mat-raised-button type="button" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm btn-just-icon" (click)="deleteTask()">
-                                                        <i class="material-icons">close</i>
-                                                    </button>
-                                            
-                                            </mat-cell>
-                                          </ng-container>
-                              
-                                <!-- Header and Row Declarations -->
-                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                            </mat-table> 
+                            
+                              <!-- Header and Row Declarations -->
+                              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                          </mat-table>  
+                      
+                      </mat-tab>
+                      <!-- <mat-tab label="Third"> Content 3 </mat-tab> -->
+                    </mat-tab-group>
+                    
+                   
                         </div>
                             <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>                    
 

@@ -2,10 +2,8 @@
   <div class="container-fluid">
       <div class="card">
           <div class="card-header card-header-danger">
-              <h3 class="card-title">Notifications</h3>
-              <p class="card-category">Handcrafted by our friend
-                  <a target="_blank" href="https://github.com/mouse0270">Robert McIntosh</a>. Please checkout the
-                  <a href="http://bootstrap-notify.remabledesigns.com/" target="_blank">full documentation.</a>
+              <h3 class="card-title">All Cheques</h3>
+              <p class="card-category">Validate or invalidate cheques based on real status.
               </p>
           </div>
           <div class="card-body">
@@ -32,19 +30,19 @@
                             Time
                         </th>
                         <th>
-                            Status
+                            Task Number
                         </th>
                         <th>
-                            Task Number
+                            Status
                         </th>
                     </thead>
                     <tbody *ngFor = "let cheque of cheque_list">
                         <tr>
                             <td>
-                                {{cheque.id}}
+                                {{cheque._id}}
                             </td>
                             <td>
-                                {{cheque.amount}}
+                                <strong>PKR</strong> {{cheque.amount}}
                             </td>
                             <td>
                                 {{cheque.salesPerson}}
@@ -57,13 +55,25 @@
                             </td>
                             <td>
                                 {{cheque.time}}
-                            </td>
-                            <td>
-                                {{cheque.validationStatus}}
-                            </td>
+                            </td>                            
                             <td>
                                 {{cheque.taskNumber}}
                             </td>
+                            <td>
+                                <div *ngIf = "!cheque.validationStatus">
+                                        <button mat-flat-button class="btn btn-danger btn-block" (click)="this.firebaseService.validateCheque(cheque._id)">INVALID</button>
+
+                                        <!-- <button mat-flat-button type="button" color="success" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm">VALID</button> -->
+                                </div>
+
+                                <div *ngIf = "cheque.validationStatus">
+                                        <button mat-flat-button class="btn btn-success btn-block" (click)="this.firebaseService.validateCheque(cheque._id)">VALID</button>
+
+                                        <!-- <button mat-flat-button type="button" color="warn" matTooltip="Delete" [matTooltipPosition]="'above'" class="btn btn-danger btn-link btn-sm">INVALID</button> -->
+                                </div>
+
+                            </td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -71,7 +81,7 @@
             
             
             
-            <div class="row">
+            <!-- <div class="row">
                   <div class="col-md-6">
                       <h4 class="card-title">Notifications Style</h4>
                       <div class="alert alert-info">
@@ -178,7 +188,7 @@
                           </div>
                       </div>
                   </div>
-              </div>
+              </div> -->
           </div>
       </div>
   </div>

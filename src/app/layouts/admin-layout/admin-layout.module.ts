@@ -34,6 +34,8 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 import {
@@ -84,7 +86,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatCheckboxModule,
     MatMenuModule,
     MatCardModule,
-    
+    MatGridListModule,
+    MatTabsModule
     // PapaParseModule,
     // AngularFirestore
   ],

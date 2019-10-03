@@ -57,19 +57,37 @@ export class Task implements ITask{
 
 }
 
-export interface CompletedTask{
-    Username:string;
-    ShopName:string;
-    Num:string;
-    Type:string;
-    Amount:string;
-    PaidAmount:string;
-    Date:string;
-    Time:string;
-    Status:string;
-    Remarks:string;
-    ImageUrl:string;
+export interface ICompletedTask{
+    deliveredBy: string;
+    imageURL:string;
     location:string;
-    deliveredBy:string;
+    paidAmount:string;
+    remarks:string;
+    shopName:string;
+    status:string;
+    taskModel:string;
+    taskNum:string;
     taskType:string;
+    time:string;
+    totalAmount:string;
+    verified:string;
+}
+
+export class CompletedTask implements ICompletedTask{
+    constructor(
+        public deliveredBy ="",
+        public imageURL = "",
+        public location = "",
+        public paidAmount = "",
+        public remarks = "",
+        public shopName = "",
+        public status = "",
+        public taskModel = "",
+        public taskNum = "",
+        public taskType = "",
+        public time = "",
+        public totalAmount = "",
+        public verified = "",
+        ){}
+
 }

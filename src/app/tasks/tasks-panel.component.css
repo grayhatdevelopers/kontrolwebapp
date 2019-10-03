@@ -58,3 +58,20 @@ border-top: 1px solid #e0e0e0;
   user-select:         none;
 }
 /*--------End Editable Cells--------*/
+
+
+
+.success { 
+  background: green; 
+  color: white; 
+}
+
+.warn { 
+  background: orange; 
+  color: white; 
+}
+
+.fail { 
+  background: red; 
+  color: white; 
+}
