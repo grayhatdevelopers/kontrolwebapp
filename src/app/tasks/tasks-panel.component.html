@@ -3,6 +3,9 @@
       <div class="row">
           <div class="col-md-6">
               <div class="card">
+
+
+                  <div *ngIf = "isEditTriggered === 'NEW'">
                   <div class="card-header card-header-primary">
                       <h4 class="card-title">Add New Task</h4>
                       <p class="card-category">Complete the details to add a new/emergency task.</p>
@@ -20,7 +23,8 @@
                                               <mat-option [value]="'KEUNE'">KEUNE</mat-option>
                                               <mat-option [value]="'BLESSO'">BLESSO</mat-option>
                                               <mat-option [value]="'EVELINE'">EVELINE</mat-option>
-                                              <mat-option [value]="'Other'">Other</mat-option>
+                                              <mat-option [value]="'STAGELINE'">STAGELINE</mat-option> 
+					      <mat-option [value]="'Other'">Other</mat-option>
                                               <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
                                                 {{food.viewValue}}
                                               </mat-option> -->
@@ -55,8 +59,10 @@
                                               <mat-option *ngFor="let client of filteredClients" [value]="client">
                                                 {{client}}
                                               </mat-option>
-                                              <div *ngIf = "this.newtaskForm.controls['client_new'].value.length > 3 && filteredClients.length != 1">
-                                              <mat-option [value]="this.newtaskForm.controls['client_new'].value" (click)='submit_newCustomerDefault()'><i class="material-icons">add</i> Create new Shop <strong>"{{this.newtaskForm.controls["client_new"].value}}"</strong> </mat-option>
+                                              <div *ngIf = "this.newtaskForm.controls['client_new'].value"> 
+                                                <div *ngIf = "this.newtaskForm.controls['client_new'].value.length > 3 && filteredClients.length != 1">
+                                                  <mat-option [value]="this.newtaskForm.controls['client_new'].value" (click)='submit_newCustomerDefault()'><i class="material-icons">add</i> Create new Shop <strong>"{{this.newtaskForm.controls["client_new"].value}}"</strong> </mat-option>
+                                                </div>
                                               </div>
                                             </mat-autocomplete>
                                           </mat-form-field>
@@ -120,9 +126,132 @@
                       </form>
                   </div>
               </div>
-          </div>
 
 
+
+
+        <div *ngIf = "isEditTriggered === 'UNDONE'">
+            <div class="card-header card-header-warning">
+                <h4 class="card-title">Edit Task</h4>
+                <p class="card-category">Edit the UNDONE task.</p>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="newtaskForm">
+                    <div class="row">
+                        <div class="col-md-7">
+                          <!-- <mat-form-field class="example-full-width"> -->
+                            
+                              <!-- <li class="nav-item dropdown" placeholder="Company"> -->
+                                  <mat-form-field>
+                                      <mat-label>Select Company</mat-label>
+                                      <mat-select formControlName="company_new">
+                                        <mat-option [value]="'KEUNE'">KEUNE</mat-option>
+                                        <mat-option [value]="'BLESSO'">BLESSO</mat-option>
+                                        <mat-option [value]="'EVELINE'">EVELINE</mat-option>
+                                              <mat-option [value]="'STAGELINE'">STAGELINE</mat-option> 
+                                        <mat-option [value]="'Other'">Other</mat-option>
+                                        <!-- <mat-option *ngFor="let food of foods" [value]="food.value">
+                                          {{food.viewValue}}
+                                        </mat-option> -->
+                                      </mat-select>
+                                    </mat-form-field>    
+                            <!-- </li> -->
+                            <!-- </mat-form-field> -->
+                        </div>
+                        <div class="col-md-5">
+                            <mat-form-field>
+                                <input matInput formControlName="date_new" [matDatepicker]="dp" placeholder="Select Date">
+                                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                                <mat-datepicker #dp></mat-datepicker>
+                              </mat-form-field>
+                              
+      
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                              <input matInput placeholder="Email address" type="email">
+                            </mat-form-field>
+                        </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                              <mat-form-field class="example-full-width">
+                                      <input type="text" placeholder="Select Client..." aria-label="Number" matInput formControlName="client_new" [matAutocomplete]="auto">
+                                      <mat-autocomplete #auto="matAutocomplete">
+                                        <mat-option *ngFor="let client of filteredClients" [value]="client">
+                                          {{client}}
+                                        </mat-option>
+                                        <div *ngIf = "this.newtaskForm.controls['client_new'].value"> 
+                                          <div *ngIf = "(this.newtaskForm.controls['client_new'].value.length > 3 && filteredClients.length != 1)">
+                                            <mat-option [value]="this.newtaskForm.controls['client_new'].value" (click)='submit_newCustomerDefault()'><i class="material-icons">add</i> Create new Shop <strong>"{{this.newtaskForm.controls["client_new"].value}}"</strong> </mat-option>
+                                          </div>
+                                      </div>
+                                      </mat-autocomplete>
+                                    </mat-form-field>
+                        </div>
+                        <div class="col-md-3">
+                            <mat-form-field>
+                                <mat-label>REP</mat-label>
+                                <mat-select formControlName="selectedOfficer_new" name="option">
+                                    <!-- <div *ngFor = "let option of supplyOfficersList"> -->
+                                        <mat-option *ngFor = "let supplyselector of supplyOfficerList" [value]="supplyselector.REP">{{supplyselector.REP}}</mat-option>
+                                      </mat-select>
+                              </mat-form-field>
+                        </div>
+                    </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <mat-form-field>
+                            <mat-label>Task Model</mat-label>
+                            <mat-select formControlName="taskModel_new">
+                              <mat-option [value]="'Order'">Order</mat-option>
+                              <mat-option [value]="'Payment'">Payment</mat-option>
+                              <mat-option [value]="'Return'">Return</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-5">
+                          <mat-form-field>
+                            <input  type="number" formControlName="debit_new" [ngClass]="{ 'is-invalid': submit_new && f.debit_new.errors }" matInput placeholder="Debit">
+                            <!-- <div *ngIf="submit_new && f.debit_new.errors">
+                                  <div *ngIf="f.debit_new.errors.required">Debit is required</div>
+                              </div> -->
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                          <mat-form-field>
+                            <mat-label>Task Type</mat-label>
+                            <mat-select formControlName="taskType_new">
+                              <mat-option [value]="'Emergency'">Emergency</mat-option>
+                              <mat-option [value]="'Regular'">Regular</mat-option>
+                              <mat-option [value]="'Off-Schedule'">Off-Schedule</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                          <label>Extra Details</label>
+                          <mat-form-field class="example-full-width">
+                             <textarea matInput placeholder="(optional)"></textarea>
+                           </mat-form-field>
+
+                        </div>
+                    </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                            <button mat-raised-button type="submit" class="btn btn-warning pull-right" (click)="resetNewTask()">CANCEL</button>
+                          <button mat-raised-button type="submit" class="btn btn-primary pull-right" [disabled]="!newtaskForm.valid" (click)="onSubmit_UNDONE()">UPDATE TASK</button>
+                          <!-- (click)="this.notificationsService.showNotification(2, 'Task created! Click here to open the task in full detail.')" -->
+                          <div class="clearfix"></div>
+                        </div>
+                      </div>
+                </form>
+            </div>
+        </div>
+  
+      </div>
+    </div>
 
 
 
@@ -162,15 +291,15 @@
                   <!-- <p class="card-category">Create a duplicate task for another rider.</p> -->
               </div>
                 <div class="card-body">
-            <!-- <mat-form-field>
+            <mat-form-field>
                 <mat-label>Select Company</mat-label>
-                <mat-select>
+                <mat-select [(value)]="bulkCompany">
                   <mat-option [value]="'KEUNE'">KEUNE</mat-option>
                   <mat-option [value]="'BLESSO'">BLESSO</mat-option>
                   <mat-option [value]="'EVELINE'">EVELINE</mat-option>
                   <mat-option [value]="'Other'">Other</mat-option>
                 </mat-select>
-              </mat-form-field>    -->
+              </mat-form-field>   
             <div class="Block">
                 <!-- <label id="lbl">Select File to Upload... </label> -->
                 <input #fileInput type='file' id="bulk_file" (change)="onFileSelect($event.target)" accept=".csv"/>
@@ -302,7 +431,9 @@
             <div class="card">
                 <div class="card-header card-header-danger">
                     <h4 class="card-title ">ALL TASKS</h4>
-                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Tasks...">
+                    <mat-form-field>
+                      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
                 </div>
                 <div class="card-body">
                     <!-- <mat-paginator [length]="100"
@@ -314,10 +445,9 @@
                     <div class="mat-elevation-z8"></div>
                     
                     <mat-tab-group>
-                      <mat-tab label="ACTIVE TASKS">  <mat-table mat-table [dataSource]="dataSource" matSort>
+                      <mat-tab label="ACTIVE TASKS">  
 
-
-                        
+                        <table mat-table [dataSource]="dataSource" matSort>
                         <!-- User name Definition -->
                         <ng-container matColumnDef="Task ID">
                           <mat-header-cell *matHeaderCellDef mat-sort-header>Task ID</mat-header-cell>
@@ -397,7 +527,8 @@
                                               </div>
 
                                               <div *ngIf = "row.status != 'WAITING'">
-                                            <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon" [disabled]="row.status != 'UNDONE'">
+                                            <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'" class="btn btn-primary btn-link btn-sm btn-just-icon" (click)="changeEditStatus(row)">
+                                            <!-- [disabled]="row.status != 'UNDONE'" -->
                                                 <i class="material-icons">edit</i>
                                             </button> 
                                               </div>
@@ -412,7 +543,9 @@
                         <!-- Header and Row Declarations -->
                         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                    </mat-table>  
+                    </table>  
+                    <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>                    
+
                   </mat-tab>
                       <mat-tab label="COMPLETED TASKS"> 
                       
@@ -502,6 +635,8 @@
                               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
                           </mat-table>  
+                          <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>                    
+
                       
                       </mat-tab>
                       <!-- <mat-tab label="Third"> Content 3 </mat-tab> -->
@@ -509,7 +644,6 @@
                     
                    
                         </div>
-                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>                    
 
                 
                 </div>

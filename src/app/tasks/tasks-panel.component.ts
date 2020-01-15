@@ -19,10 +19,11 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
+
 import { SelectionModel, DataSource } from "@angular/cdk/collections";
 
 import { map, startWith } from "rxjs/operators";
-import { Observable, of, throwError } from "rxjs";
+import { Observable, of, throwError, forkJoin } from "rxjs";
 
 import { FirebaseService } from "../shared/firebase.service";
 
@@ -35,6 +36,7 @@ import { trigger, transition, animate, style } from "@angular/animations";
 import * as Papa from "papaparse";
 import * as moment from "moment";
 import { Customer } from "app/components_settings/customers/customer";
+import { isNumber } from "util";
 
 export interface MouseEvent {
   rowId: number;
@@ -86,13 +88,31 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  activeTasksList: Task[];
-  completedTasksList: CompletedTask[];
+  @ViewChild(MatPaginator, { static: true }) paginator_completed: MatPaginator;
+
+
+  activeTasksList: Task[] = new Array();
+  completedTasksList: any[];
+
+
 
   dataSource: MatTableDataSource<Task>;
   dataSource_bulk: string[];
   dataSource_completed: MatTableDataSource<CompletedTask>;
 
+ 
+
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSource_completed.filter = filterValue.trim().toLowerCase();
+    setTimeout(() => this.dataSource.paginator = this.paginator);
+    setTimeout(() => this.dataSource_completed.paginator = this.paginator_completed);
+
+  }
+
+
+  isEditTriggered: string = "NEW";
 
   // tableMouseDown:   MouseEvent;
   // tableMouseUp:     MouseEvent;
@@ -123,6 +143,9 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
 
   Bulk_Display: boolean = false;
 
+
+  tasksRef: firebase.database.Reference;
+
   constructor(
     private _adapter: DateAdapter<any>,
     public notificationsService: NotificationsService,
@@ -143,8 +166,64 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
       taskID_transfer: ["", Validators.required],
       REP_transfer: ["", Validators.required]
     });
+
+    this.dataSource = new MatTableDataSource<Task>(this.activeTasksList);
+
+    this.tasksRef = this.firebaseService.db.database.ref('TASKS');
+    this.tasksRef.on('child_added', data => {
+  
+      // console.log("Listen, some data was added...")
+      // console.log("Data is: ", data)
+      // console.log("The details are, ", data.key, data.val())
+  
+  
+      this.activeTasksList.push(data.val());
+      // data.val()
+  
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      // addCommentElement(postElement, data.key, data.val().text, data.val().author);
+    });
+    
+    this.tasksRef.on('child_changed', (data) =>{
+      console.log("Listen, some data was changed...")
+      console.log("Data is: ", data)
+      console.log("The details are, ", data.key, data.val())
+  //toDo: improve ythis
+      let i = this.activeTasksList.findIndex(x => x.num === data.val().num);
+      if (i !=-1)
+        this.activeTasksList[i] = data.val();
+      else
+        this.activeTasksList.push(data.val());
+
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      // setCommentValues(postElement, data.key, data.val().text, data.val().author);
+    });
+    
+    this.tasksRef.on('child_removed', (data) => {
+      console.log("Listen, some data was deleted...")
+      console.log("Data is: ", data)
+  
+      let i = this.activeTasksList.findIndex(data.val());
+      if (i !=-1)
+        this.activeTasksList.splice(i);
+      
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;  
+
+      // deleteComment(postElement, data.key);
+    });
+  
+
+
   }
 
+
+
+
+
+  
   newtaskForm: FormGroup;
   transfertaskForm: FormGroup;
 
@@ -177,50 +256,66 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
       console.log(`Got Employees: ${this.supplyOfficerList}`);
     });
 
-    this.firebaseService.getActiveTasks().subscribe(
-      (result: any) => {
-        this.activeTasksList = result;
-        this.dataSource = new MatTableDataSource<Task>(this.activeTasksList);
+    // this.firebaseService.getActiveTasks().subscribe(
+    //   (result: any) => {
+    //     this.activeTasksList = result;
+    //     this.dataSource = new MatTableDataSource<Task>(this.activeTasksList);
 
-        setTimeout(() => {
-          this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-          console.log("Paginator time");
-          console.log(this.sort);
-        }, 500);
+    //     setTimeout(() => {
+    //       this.dataSource.sort = this.sort;
+    //       this.dataSource.paginator = this.paginator;
+    //       console.log("Paginator time");
+    //       console.log(this.sort);
+    //     }, 500);
 
-        // this.dataSource.sort = this.sort;
-        // this.dataSource.paginator = this.paginator;
+    //     // this.dataSource.sort = this.sort;
+    //     // this.dataSource.paginator = this.paginator;
 
-        console.log(`Got Tasks: ${this.activeTasksList}`);
-      },
-      err => {
-        console.log("error caught");
-        this.notificationsService.showNotification(3, "Error in retreiving tasks.", err);
+    //     console.log(`Got Tasks: ${this.activeTasksList}`);
+    //   },
+    //   err => {
+    //     console.log("error caught");
+    //     this.notificationsService.showNotification(3, "Error in retreiving tasks.", err);
+    //   }
+    // );
+
+    let observer = this.firebaseService.getCompletedTasks().onSnapshot(doc => {
+      console.log("Current data: ", doc.docs[0].data());
+
+      this.completedTasksList = [];
+      for (let i =0; i<doc.size; i++){
+          this.completedTasksList.push(doc.docs[i].data());
       }
-    );
 
-    this.firebaseService.getCompletedTasks().subscribe(
-      (result: any) => {
-        this.completedTasksList = result;
-        this.dataSource_completed = new MatTableDataSource<CompletedTask>(this.completedTasksList);
+      this.dataSource_completed = new MatTableDataSource<CompletedTask>(this.completedTasksList);
+  });
+    
+    // .subscribe(
+    //   (result: any) => {
+    //     this.dataSource_completed = new MatTableDataSource<CompletedTask>(result);
 
-        setTimeout(() => {
-          this.dataSource_completed.sort = this.sort;
-          this.dataSource_completed.paginator = this.paginator;
-          console.log("Paginator time");
-          console.log(this.sort);
-        }, 500);
+    //     setTimeout(() => {
+    //       this.dataSource_completed.sort = this.sort;
+    //       this.dataSource_completed.paginator = this.paginator_completed;
+    //       console.log("Paginator time");
+    //       console.log(this.sort);
+    //     }, 500);
 
-        // this.dataSource.sort = this.sort;
-        // this.dataSource.paginator = this.paginator;
+    //     // this.dataSource.sort = this.sort;
+    //     // this.dataSource.paginator = this.paginator;
 
-        console.log(`Got Tasks: ${this.completedTasksList}`);
-      },
-      err => {
-        console.log("error caught");
-        this.notificationsService.showNotification(3, "Error in retreiving Completed tasks.", err);      }
-    );
+    //     // console.log(`Got Tasks: ${this.completedTasksList}`);
+    //   },
+    //   err => {
+    //     console.log("error caught");
+    //     this.notificationsService.showNotification(3, "Error in retreiving Completed tasks.", err);      }
+    // );
+
+
+
+
+
+
 
     // this.clientOptions_new = this.newtaskForm.valueChanges
     // .pipe(
@@ -243,11 +338,13 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource<Task>(this.activeTasksList);
-    this.dataSource.sort = this.sort;
+    setTimeout(() => this.dataSource.paginator = this.paginator);
+    setTimeout(() => this.dataSource_completed.paginator = this.paginator_completed);
 
-    this.dataSource_completed = new MatTableDataSource<CompletedTask>(this.completedTasksList);
-    this.dataSource_completed.sort = this.sort;
+    this.dataSource.sort = this.sort;
     
+    
+
   }
 
   get f() {
@@ -270,7 +367,25 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
   }
 
 
+  changeEditStatus(task:any){
+    this.newtaskForm.controls['company_new'].setValue(task.company);
+    this.newtaskForm.controls['date_new'].setValue(moment(task.date, 'DD/MM/YYYY'));
+    this.newtaskForm.controls['client_new'].setValue(task.shopName);
+    this.newtaskForm.controls['selectedOfficer_new'].setValue(task.rep);
+    this.newtaskForm.controls['taskModel_new'].setValue(task.taskModel);
+    this.newtaskForm.controls['debit_new'].setValue(task.debit);
+    this.newtaskForm.controls['taskType_new'].setValue(task.taskType);
+    this.oldTask = task;
+    this.isEditTriggered=task.status;
+  }
 
+
+  resetNewTask(){
+    
+    this.newtaskForm.reset();
+    this.filteredClients = this._filter("");
+    this.isEditTriggered="NEW";
+  }
 
 
 
@@ -435,6 +550,87 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
         this.firebaseService.createNewTask(newTask);
       }
       this.submit_new = false;
+      this.newtaskForm.reset();
+      // console.log(this.submit_new);
+    });
+  }
+
+
+
+  oldTask: Task;
+  onSubmit_UNDONE(newTaskID: string = "") {
+    this.submit_new = true;
+    if (this.newtaskForm.invalid) {
+      return;
+    }
+    var today = this.newtaskForm.controls["date_new"].value;
+    var tomorrow = moment(today).add(1, "days");
+    var datestring = JSON.stringify(tomorrow);
+    console.log("The date is", datestring);
+    var year = "";
+    var month = "";
+    var day = "";
+    for (let i = 3; i < 5; i++) {
+      year = year + datestring[i];
+    }
+
+    for (let i = 6; i < 8; i++) {
+      month = month + datestring[i];
+    }
+
+    for (let i = 9; i < 11; i++) {
+      day = day + datestring[i];
+    }
+    console.log("But the year is", year);
+    console.log("And month is", month);
+    console.log("And day is", day);
+    let finalDate: string = day + "/" + month + "/20" + year;
+    // let finalDate: string = day + "-" + month + "-" + year;
+    console.log("The date is now", finalDate);
+    // var newTask: Task=(this.newtaskForm.controls['type_new'].value, this.newtaskForm.controls['client'].value), finaldate=finalDate, date="123", selectedboi=this.newtaskForm.controls['selectedOfficer_new'].value, debitboi=this.newtaskForm.controls['debit_new'].value, statusboi='UNDONE', assignedboi=this.newtaskForm.controls['selectedOfficer_new'].value, tranboi="0", tasktypeboi=this.newtaskForm.controls['taskType_new'].value);
+    let thisTask = new Task(
+      this.newtaskForm.controls["selectedOfficer_new"].value,
+      this.oldTask.createdAt,
+      finalDate,
+      this.newtaskForm.controls["debit_new"].value,
+      "",
+      this.oldTask.num,
+      this.newtaskForm.controls["selectedOfficer_new"].value,
+      this.newtaskForm.controls["client_new"].value,
+      "UNDONE",
+      this.newtaskForm.controls["taskModel_new"].value,
+      this.newtaskForm.controls["taskType_new"].value,
+      this.oldTask.transference,
+      this.newtaskForm.controls["company_new"].value
+    );
+
+    console.log(thisTask);
+    console.log(moment().unix());
+    var DialogRef: any;
+    DialogRef = this.openDialog(
+      "? Preview your updated task.",
+      `COMPANY: ${thisTask.company} <br>
+      DATE: ${thisTask.date} <br> 
+      CLIENT: ${thisTask.shopName} <br> 
+      REP: ${thisTask.rep} <br> 
+      Task Model: ${thisTask.taskModel} <br> 
+      Debit: ${thisTask.debit} <br> 
+      Task Type: ${thisTask.taskType} <br> 
+      Extra Details:`,
+      "",
+      ""
+    );
+
+    DialogRef.afterClosed().subscribe(result => {
+      console.log(`The dialog was closed, ${result}`);
+
+      console.log("Attempting to update the UNDONE task");
+
+      if (result) {
+        this.firebaseService.updateUNDONETask(thisTask, Number(this.oldTask.debit))
+      }
+      this.submit_new = false;
+      this.newtaskForm.reset();
       // console.log(this.submit_new);
     });
   }
@@ -442,41 +638,220 @@ export class TasksPanelComponent implements OnInit, AfterViewInit {
   onSubmit_bulk() {
     this.Bulk_Display = !this.Bulk_Display;
   }
-  bulk_button_helper: string = "Upload Selected Tasks";
-  processTasks() {
-    console.log("The selected items are:", this.selection.selected);
 
-    for (let i=0; i<this.selection.selected.length; i++){
-        this.selection.selected[i];
-        let bulkNewTask: Task;
-        bulkNewTask.taskType = this.selection.selected[i]['Type'];
-        bulkNewTask.date = this.selection.selected[i]['Date'];
-        bulkNewTask.num = this.selection.selected[i]['Num'];
-        bulkNewTask.shopName = this.selection.selected[i]['Name'];
-        bulkNewTask.rep = this.selection.selected[i]['SUPPLIED BY'];
-        bulkNewTask.assignedTo = this.selection.selected[i]['SUPPLIED BY'];
-        // bulkNewTask.
-        
+  bulk_button_helper: string = "Upload Selected Tasks";
+
+
+
+  bulkCompany:string;
+
+
+
+
+processTasks() {
+    console.log("The selected items are:", this.selection.selected);
+    console.log("The Company is:", this.bulkCompany);
+    
+    // let bulkObserver: boolean;
+    var endingLimit = this.selection.selected.length;
+
+    var theSelectedTasks = [];
+    var failedIndexes = [];
+
+    var successcounter = 0;
+    var observables: Observable<boolean>[] = [];
+
+    var bulkDates: any[] = [];
+    // date conversion
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      bulkDates[i] = this.selection.selected[i]['Date'];
+      if (bulkDates[i][2] === "-"){
+        bulkDates[i][2] = "/";
+        bulkDates[i][5] = "/";
+        let year = bulkDates[i][6] + bulkDates[i][7];
+        bulkDates[i][6] = "2";
+        bulkDates[i][7] = "0";
+        bulkDates[i] += year;
+      }
     }
+
+    for (let i = 0; i < this.selection.selected.length; i++) {
+      let bulkNewTask: Task = new Task;
+      bulkNewTask.assignedTo = this.selection.selected[i]['SUPPLIED BY'];
+      bulkNewTask.createdAt = JSON.stringify(moment().unix());
+      bulkNewTask.date = this.selection.selected[i]['Date'];
+
+      let debit_converted: string = this.selection.selected[i]['Debit'];
+      
+      if (!isNumber(debit_converted))      debit_converted=debit_converted.replace(/,/g, '');
+      
+
+      bulkNewTask.debit = Number(debit_converted);
+
+      console.log("The debit is:", debit_converted);
+
+
+      bulkNewTask.lastUpdatedAt = "";      
+      bulkNewTask.num = this.selection.selected[i]['Num'];
+      bulkNewTask.rep = this.selection.selected[i]['SUPPLIED BY'];
+      bulkNewTask.shopName = this.selection.selected[i]['Name'];
+      bulkNewTask.status = "UNDONE";
+
+      bulkNewTask.taskModel = this.selection.selected[i]['Type'];
+
+      if (this.selection.selected[i]['Frequency'] == "R" || this.selection.selected[i]['Frequency'] == "r")
+             bulkNewTask.taskType = "Regular";
+      else if (this.selection.selected[i]['Frequency'] == "E" || this.selection.selected[i]['Frequency'] == "e")
+             bulkNewTask.taskType = "Emergency";
+      else if (this.selection.selected[i]['Frequency'] == "O" || this.selection.selected[i]['Frequency'] == "o")
+             bulkNewTask.taskType = "Off-Schedule";
+      else
+            bulkNewTask.taskType = "";
+
+      
+
+      bulkNewTask.transference = "1";
+      bulkNewTask.company = this.bulkCompany;
+
+      // if (this.firebaseService.createBulkTasks(bulkNewTask))
+
+      console.log("This task is... ", bulkNewTask );
+      theSelectedTasks.push(bulkNewTask);
+
+        observables.push(this.firebaseService.createBulkTasks(bulkNewTask));
+
+
+      }
+
+    forkJoin(observables)
+      .subscribe(dataArray => {
+          // All observables in `observables` array have resolved and `dataArray` is an array of result of each observable
+          for (let i=0; i<endingLimit; i++){
+            if (dataArray[i]===false){
+              failedIndexes.push(theSelectedTasks[i]);
+            }
+            else{
+              successcounter++;
+            }
+          }
+
+          if (failedIndexes.length!=0){
+            this.notificationsService.showNotification(
+              4,
+              `${failedIndexes.length} tasks could not be uploaded.`,
+              `${failedIndexes}`,
+              "customercards"
+            );
+
+
+          }
+ 
+
+          if (failedIndexes.length != endingLimit){
+            
+            this.notificationsService.showNotification(
+              2,
+              `${successcounter} out of ${dataArray.length} tasks created successfully!`,
+              "See the details in the bulk upload dialog.",
+              "customercards"
+            );
+
+          }
+
+        });
+
+
+
+console.log("Reached the end of bulk upload.");
+
+
+
+    // for (let i=0; i<this.selection.selected.length; i++){
+    //     // var bulkNewTask: Task;
+    //     bulkNewTask.assignedTo = this.selection.selected[i]['SUPPLIED BY'];
+    //     bulkNewTask.createdAt = JSON.stringify(moment().unix());
+    //     bulkNewTask.date = this.selection.selected[i]['Date'];
+
+    //     let debit_converted: string = this.selection.selected[i]['Debit'].replace(/[\[\],]+/g, '');;
+        
+
+    //     bulkNewTask.debit = debit_converted;
+
+    //     console.log("The debit is:", debit_converted);
+
+
+    //     bulkNewTask.lastUpdatedAt = "";      
+    //     bulkNewTask.num = this.selection.selected[i]['Num'];
+    //     bulkNewTask.rep = this.selection.selected[i]['SUPPLIED BY'];
+    //     bulkNewTask.shopName = this.selection.selected[i]['Name'];
+    //     bulkNewTask.status = "UNDONE";
+
+    //     bulkNewTask.taskModel = this.selection.selected[i]['Type'];
+
+    //     if (this.selection.selected[i]['Frequency'] == "R" || this.selection.selected[i]['Frequency'] == "r")
+    //            bulkNewTask.taskType = "Regular";
+    //     else if (this.selection.selected[i]['Frequency'] == "E" || this.selection.selected[i]['Frequency'] == "e")
+    //            bulkNewTask.taskType = "Emergency";
+    //     else if (this.selection.selected[i]['Frequency'] == "O" || this.selection.selected[i]['Frequency'] == "o")
+    //            bulkNewTask.taskType = "Off-Schedule";
+    //     else
+    //           bulkNewTask.taskType = "";
+
+        
+
+    //     bulkNewTask.transference = "1";
+    //     bulkNewTask.company = this.bulkCompany;
+
+    //     // if (this.firebaseService.createBulkTasks(bulkNewTask))
+
+    //   console.log("This task is... ", bulkNewTask );
+
+    //     // bulkNewTask.createdAt =
+        
+    //     // bulkNewTask.
+
+    //     this.firebaseService.createBulkTasks(bulkNewTask).subscribe((result)=>{
+    //       if (result==true){
+    //         successcounter ++;
+    //       }
+    //       else{
+    //         failedIndexes.push(bulkNewTask);
+    //       }
+    //       totalcounter++;
+    //       if (totalcounter == endingLimit){
+    //           let failedstring: string = "";
+    //           if(successcounter!=totalcounter){
+                
+    //             this.notificationsService.showNotification(
+    //               4,
+    //               `The following tasks could not be uploaded.`,
+    //               `${failedIndexes}`,
+    //               "customercards"
+    //             );
+  
+  
+    //           }
+    //           this.notificationsService.showNotification(
+    //             2,
+    //             `${successcounter} out of ${totalcounter} tasks created successfully!`,
+    //             "See the details in the bulk upload dialog.",
+    //             "customercards"
+    //           );
+    //       }
+    //     });      
+
+        
+    // }
 
     const button = document.getElementById("bulk_button");
     button.classList.add("shakeit");
     this.bulk_button_helper =
       "There are some preventive errors, please resolve them and try again";
 
-    // }
-    // else
     console.log("The first task is: ", this.selection.selected[0]);
     let newTask: Task = this.selection.selected[0];
     console.log("newTask is: ", newTask);
-    {
-      this.notificationsService.showNotification(
-        2,
-        `${this.selection.selected.length} tasks created!`,
-        "See the details in the bulk upload dialog.",
-        "customercards"
-      );
-    }
+
   }
 
   private _filter(value: string): string[] {

@@ -2,7 +2,7 @@ export interface ITask{
     assignedTo: string;
     createdAt: string;
     date: string;    
-    debit: string;
+    debit: number;
     lastUpdatedAt: string;
     num: string;
     rep: string;
@@ -31,7 +31,7 @@ export class Task implements ITask{
                 public assignedTo = "",
                 public createdAt = "",
                 public date = "",  
-                public debit = "",
+                public debit = 0,
                 public lastUpdatedAt = "",
                 public num = "",
                 public rep = "",

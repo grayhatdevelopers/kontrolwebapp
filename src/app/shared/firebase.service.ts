@@ -48,15 +48,18 @@ export class FirebaseService {
         tap(data => console.log('createTasks: ' + JSON.stringify(data))),
         catchError(this.handleError)
       );
+  //     this.db.database.ref
+  // ("TASKS")..pipe(
+  //       // map(data=>data as any),
+  //       tap(data => console.log('createTasks: ' + JSON.stringify(data))),
+  //       catchError(this.handleError)
+  //     );
   }
 
   getCompletedTasks() {
-    return this.store.collection("paymentsRecord").valueChanges().pipe(
-          // map(data=>data as any),
-          tap(data => console.log('createCompletedTasks: ' + JSON.stringify(data))),
-          catchError(this.handleError)
-        );
-      
+    return this.store.firestore.collection("paymentsRecord")
+      .limit(5)
+      .orderBy('time', 'desc');      
   }
 
 
@@ -450,6 +453,133 @@ query.get()
 
     // });
   }
+
+
+  createBulkTasks(newTask: Task):Observable<boolean> {
+  
+    var dataRef: any;
+    var returnRef: any;
+    dataRef = this.updateCustomerDebit(newTask.shopName, Number(newTask.debit));
+    return dataRef.transaction(function (current_value) {
+        console.log("Hopefully, the old debit is: ", current_value);
+        return (current_value || 0) + newTask.debit;
+      }).then( (result) => {
+        console.log (result);
+      this.db.database.ref('TASKS/' + newTask.num).set({
+      assignedTo: newTask.assignedTo,
+      createdAt: newTask.createdAt,
+      date: newTask.date,   
+      debit: newTask.debit,
+      lastUpdatedAt: "",
+      num: JSON.stringify(newTask.num),
+      rep: newTask.rep,
+      shopName: newTask.shopName,
+      status: "UNDONE",
+      taskModel: newTask.taskModel,
+      taskType: newTask.taskType,
+      transference: "1",
+      company: newTask.company,
+    }).then(result2 => {
+      return true;
+    })
+    .catch(error => {
+      this.notificationsService.showNotification(
+        4,
+        "Error in creating task ID#" + newTask.num,
+        error,
+        ""
+      );
+
+      return false;
+    });
+    
+  }).catch((error)=>{
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    this.notificationsService.showNotification(4, "Encountered an error while updating Customer details, so the task was not created.", errorCode + errorMessage)
+
+    return false;
+
+  });
+
+    
+    // .then(function(){
+    //  alert("Task created successfully.");
+    //     // this.notificationsService.showNotification(0, "Error", "hello", "");
+    // }).catch(function(error) {
+    //   alert("Task was not created." + error);
+    //     // this.notificationsService.showNotification(3, "Error in creating task:", error, '');
+
+    // });
+  }
+
+
+
+
+
+  updateUNDONETask(UNDONETask: Task, previousAddedDebt: Number) {
+    // var newPostKey = this.db.database.ref().child('posts').push().key;
+    var time= JSON.stringify(moment().unix());
+    // var milliseconds= JSON.stringify(moment().valueOf());
+
+    var dataRef: any;
+    var returnRef: any;
+    dataRef = this.updateCustomerDebit(UNDONETask.shopName, Number(UNDONETask.debit));
+    dataRef.transaction((current_value) => {
+      console.log("Attempting to restore the old Customer's details... \nHopefully, the old debit is: ", current_value);
+      return (current_value || 0) - Number(previousAddedDebt);
+    }).then( result => {
+
+      dataRef.transaction((current_value) =>{
+        console.log("Attempting to update the new Customer's details... \nHopefully, the old debit is: ", current_value);
+        return (current_value || 0) + UNDONETask.debit;
+      }).then( (result) => {
+        console.log (result);
+      this.db.database.ref('TASKS/' + UNDONETask.num).update({
+      date: UNDONETask.date,   
+      debit: UNDONETask.debit,
+      lastUpdatedAt: time,
+      rep: UNDONETask.rep,
+      // shopName: UNDONETask.shopName,
+      // shopname change is not allowed as current customer update has not been tried
+      taskModel: UNDONETask.taskModel,
+      taskType: UNDONETask.taskType,
+      company: UNDONETask.company,
+    }).then(result2 => {
+      this.notificationsService.showNotification(
+        2,
+        "Task updated!",
+        "Click here to open the task in full detail.",
+        "customercards"
+      );
+    })
+    .catch(error => {
+      this.notificationsService.showNotification(
+        4,
+        "Error in updating task:",
+        error,
+        ""
+      );
+    });
+    
+  }).catch((error)=>{
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    this.notificationsService.showNotification(4, "Encountered an error while updating Customer details, so the task was not updated.", errorCode + errorMessage)
+  });
+      
+    }).catch(error => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      this.notificationsService.showNotification(4, "Encountered an error while restoring the original Customer details, so the task was not updated.", errorCode + errorMessage)
+    });
+ 
+  }
+
+
+
+
+
 
   deleteTask(taskKey) {
     // this.db.database.ref().orde
