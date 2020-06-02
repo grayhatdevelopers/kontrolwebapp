@@ -1,3 +1,8 @@
+# The First Ever Kontrol App
+> Around November 2018, I received a call that would change a lot of things in the course of my life. 
+
+
+
 # [Material Dashboard Angular - Free Bootstrap Material Design Admin](https://www.creative-tim.com/product/material-dashboard-angular2)[![version][version-badge]][CHANGELOG]
 
 ![Product Gif](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/material-dashboard-angular/material-dashboard-angular.gif)
